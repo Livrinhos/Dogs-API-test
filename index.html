@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Galeria de Cachorros</title>
+</head>
+<body>
+
+  <h1>🐶 Galeria de Cachorros</h1>
+
+  <select id="breeds">
+    <option value="">Selecione uma raça</option>
+  </select>
+
+  <br><br>
+
+  <img id="dogImage" width="400">
+
+  <script>
+    const select = document.getElementById("breeds");
+    const img = document.getElementById("dogImage");
+
+    function formatarNome(nome) {
+      return nome
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, letra => letra.toUpperCase());
+    }
+
+    // Buscar raças
+    fetch("https://dog.ceo/api/breeds/list/all")
+      .then(res => res.json())
+      .then(data => {
+        const breeds = data.message;
+
+        Object.keys(breeds).forEach(breed => {
+          if (breeds[breed].length === 0) {
+            // Raça normal
+            const option = document.createElement("option");
+            option.value = breed;
+            option.textContent = formatarNome(breed);
+            select.appendChild(option);
+          } else {
+            // Sub-raças
+            breeds[breed].forEach(subBreed => {
+              const option = document.createElement("option");
+              option.value = `${breed}/${subBreed}`;
+              option.textContent = formatarNome(`${breed} ${subBreed}`);
+              select.appendChild(option);
+            });
+          }
+        });
+      });
+
+    // Quando selecionar
+    select.addEventListener("change", () => {
+      const breed = select.value;
+      if (!breed) return;
+
+      fetch(`https://dog.ceo/api/breed/${breed}/images/random`)
+        .then(res => res.json())
+        .then(data => {
+          img.src = data.message;
+        });
+    });
+  </script>
+
+</body>
+</html>
