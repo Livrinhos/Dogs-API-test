@@ -3,22 +3,89 @@
 <head>
   <meta charset="UTF-8">
   <title>Galeria de Cachorros</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 420px;
+      transition: 0.3s;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      margin-bottom: 15px;
+      cursor: pointer;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: #ff6b6b;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #ff3b3b;
+    }
+
+    img {
+      margin-top: 20px;
+      width: 100%;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      transition: 0.3s;
+    }
+
+    img:hover {
+      transform: scale(1.03);
+    }
+  </style>
 </head>
 <body>
 
-  <h1>🐶 Galeria de Cachorros</h1>
+  <div class="card">
+    <h1>🐶 Galeria de Cachorros</h1>
 
-  <select id="breeds">
-    <option value="">Selecione uma raça</option>
-  </select>
+    <select id="breeds">
+      <option value="">Selecione uma raça</option>
+    </select>
 
-  <br><br>
+    <button id="btn">Buscar Imagem</button>
 
-  <img id="dogImage" width="400">
+    <img id="dogImage">
+  </div>
 
   <script>
     const select = document.getElementById("breeds");
     const img = document.getElementById("dogImage");
+    const btn = document.getElementById("btn");
 
     function formatarNome(nome) {
       return nome
@@ -26,7 +93,6 @@
         .replace(/\b\w/g, letra => letra.toUpperCase());
     }
 
-    // Buscar raças
     fetch("https://dog.ceo/api/breeds/list/all")
       .then(res => res.json())
       .then(data => {
@@ -34,13 +100,11 @@
 
         Object.keys(breeds).forEach(breed => {
           if (breeds[breed].length === 0) {
-            // Raça normal
             const option = document.createElement("option");
             option.value = breed;
             option.textContent = formatarNome(breed);
             select.appendChild(option);
           } else {
-            // Sub-raças
             breeds[breed].forEach(subBreed => {
               const option = document.createElement("option");
               option.value = `${breed}/${subBreed}`;
@@ -51,8 +115,7 @@
         });
       });
 
-    // Quando selecionar
-    select.addEventListener("change", () => {
+    btn.addEventListener("click", () => {
       const breed = select.value;
       if (!breed) return;
 
